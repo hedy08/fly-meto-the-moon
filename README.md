@@ -51,3 +51,60 @@ In Utah, it is illegal to swear in front of a dead person.
 ---------------------------------------
 
 C:\MyFactProject>
+
+
+   """
+    Adds a new fact to the archive if it is not already present.
+    """
+    # 1. Load existing facts
+    facts = load_facts()
+
+    # 2. Check for duplicates
+    # We create a set of existing fact texts for fast lookup
+    existing_texts = {fact['text'] for fact in facts}
+    
+    if new_fact_text in existing_texts:
+        print(f"⚠️ Duplicate found. Fact not added: '{new_fact_text}'")
+        return False # Indicate that the fact was not added
+
+    # 3. If unique, create a new fact dictionary and add it
+    # We can add more fields like an ID or a timestamp later
+    new_fact = {"text": new_fact_text}
+    facts.append(new_fact)
+    
+    # 4. Save the updated list back to the file
+    save_facts(facts)
+    print(f"🚀 New fact added: '{new_fact_text}'")
+    return True # Indicate success
+
+# --- Example Usage ---
+if __name__ == "__main__":
+    print("--- Running Fact Archive Manager ---")
+
+    # Let's try adding some facts
+    add_fact("The Eiffel Tower can be 15 cm taller during the summer.")
+    add_fact("A group of flamingos is called a 'flamboyance'.")
+    
+    # Let's try adding a duplicate
+    add_fact("The Eiffel Tower can be 15 cm taller during the summer.")
+    
+    # Add another new fact
+    add_fact("Honey never spoils.")
+
+    # Finally, let's load and print all facts to see our collection
+    print("\n--- Current Fact Archive ---")
+    all_facts = load_facts()
+    if not all_facts:
+        print("The archive is empty.")
+    else:
+        for i, fact in enumerate(all_facts, 1):
+            print(f"{i}. {fact['text']}")
+
+C:\Users\Hedy Kuo>cd C:\FactAchieve.py
+
+C:\FactAchieve.py>C:\FactAchieve.py\fact_achieve.py
+
+C:\FactAchieve.py>
+
+
+
