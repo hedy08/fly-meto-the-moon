@@ -100,11 +100,23 @@ if __name__ == "__main__":
         for i, fact in enumerate(all_facts, 1):
             print(f"{i}. {fact['text']}")
 
-C:\Users\Hedy Kuo>cd C:\FactAchieve.py
+C:\Users\Hedy Kuo>cd "C:\Open impact lab\Projec 1"
 
-C:\FactAchieve.py>C:\FactAchieve.py\fact_achieve.py
+C:\Open impact lab\Projec 1>python "C:\Open impact lab\Projec 1\FactAchieve.py"
+C:\Users\Hedy Kuo\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\python.exe: can't find '__main__' module in 'C:\\Open impact lab\\Projec 1\\FactAchieve.py'
 
-C:\FactAchieve.py>
+C:\Open impact lab\Projec 1>python "C:\Open impact lab\Projec 1\FactAchieve.py\fact_achieve.py.py"
+--- Running Fact Archive Manager ---
+✅ Facts successfully saved to fact_archive.json
+🚀 New fact added: 'The Eiffel Tower can be 15 cm taller during the summer.'
+✅ Facts successfully saved to fact_archive.json
+🚀 New fact added: 'A group of flamingos is called a 'flamboyance'.'
+⚠️ Duplicate found. Fact not added: 'The Eiffel Tower can be 15 cm taller during the summer.'
+✅ Facts successfully saved to fact_archive.json
+🚀 New fact added: 'Honey never spoils.'
 
-
+--- Current Fact Archive ---
+1. The Eiffel Tower can be 15 cm taller during the summer.
+2. A group of flamingos is called a 'flamboyance'.
+3. Honey never spoils.
 
