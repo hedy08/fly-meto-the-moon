@@ -120,3 +120,114 @@ C:\Open impact lab\Projec 1>python "C:\Open impact lab\Projec 1\FactAchieve.py\f
 2. A group of flamingos is called a 'flamboyance'.
 3. Honey never spoils.
 
+
+import requests
+import json
+import time
+import schedule
+import os
+
+# --- Configuration ---
+API_URL = "https://uselessfacts.jsph.pl/random.json?language=en"
+STORAGE_FILE = "fact_archive.json"
+FETCH_INTERVAL_SECONDS = 10 # Set the interval for fetching new facts
+
+# --- Data Management Functions ---
+
+def load_archive():
+    """Loads the fact archive from the JSON file."""
+    if not os.path.exists(STORAGE_FILE):
+        return [] # Return an empty list if the file doesn't exist yet
+    try:
+        with open(STORAGE_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (json.JSONDecodeError, FileNotFoundError):
+        # If the file is empty or corrupted, start with an empty list
+        return []
+
+def save_archive(data):
+    """Saves the fact archive to the JSON file."""
+    with open(STORAGE_FILE, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=4)
+
+# --- Core Task Function ---
+
+def collect_new_fact():
+    """Fetches, checks, and stores a new unique fact."""
+    print(f"🚀 Running job: Fetching a new fact...")
+
+    # 1. Fetch data from the API
+    try:
+        response = requests.get(API_URL, timeout=10)
+        response.raise_for_status()  # Raise an exception for bad status codes (4xx or 5xx)
+        fact_data = response.json()
+        new_fact = fact_data.get('text')
+
+        if not new_fact:
+            print("⚠️ API response did not contain a fact. Skipping.")
+            return
+
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Error fetching from API: {e}")
+        return
+
+    # 2. Load existing archive
+    archive = load_archive()
+    
+    # Create a set of existing facts for fast lookup
+    existing_facts = {item['fact'] for item in archive}
+
+    # 3. Deduplicate and Save
+    if new_fact not in existing_facts:
+        new_entry = {
+            'fact': new_fact,
+            'source': fact_data.get('source_url'),
+            'added_at': time.strftime("%Y-%m-%d %H:%M:%S")
+        }
+        archive.append(new_entry)
+        save_archive(archive)
+        print(f"✅ New fact added: '{new_fact[:50]}...'")
+    else:
+        print(f"💡 Fact already exists. No action taken.")
+
+# --- Automation Scheduler ---
+
+print("🎯 Digital Fact Collector Initialized.")
+print(f"🕒 Scheduling fact collection every {FETCH_INTERVAL_SECONDS} seconds.")
+
+# Schedule the job
+schedule.every(FETCH_INTERVAL_SECONDS).seconds.do(collect_new_fact)
+
+# Run the scheduler indefinitely
+try:
+    # Run the job once immediately without waiting for the first interval
+    collect_new_fact() 
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+except KeyboardInterrupt:
+    print("\n🛑 Automation stopped by user. Goodbye!")
+
+C:\Users\Hedy Kuo>cd "C:\Open impact lab\FactCollector"
+
+C:\Open impact lab\FactCollector>python "C:\Open impact lab\FactCollector\fact_collector.py.py"
+🎯 Digital Fact Collector Initialized.
+🕒 Scheduling fact collection every 10 seconds.
+🚀 Running job: Fetching a new fact...
+✅ New fact added: 'The average human blinks their eyes 6,205,000 time...'
+🚀 Running job: Fetching a new fact...
+✅ New fact added: 'All 50 states are listed across the top of the Lin...'
+🚀 Running job: Fetching a new fact...
+✅ New fact added: 'In Bangladesh, kids as young as 15 can be jailed f...'
+🚀 Running job: Fetching a new fact...
+✅ New fact added: 'Most toilets flush in E flat....'
+🚀 Running job: Fetching a new fact...
+✅ New fact added: 'On average, 12 newborns will be given to the wrong...'
+🚀 Running job: Fetching a new fact...
+✅ New fact added: 'In Japan, watermelons are squared. It's easier to ...'
+🚀 Running job: Fetching a new fact...
+✅ New fact added: 'The "pound" key on your keyboard (#) is called an ...'
+🚀 Running job: Fetching a new fact...
+✅ New fact added: 'The average person laughs 10 times a day!...'
+🚀 Running job: Fetching a new fact...
+✅ New fact added: 'Nearly 80% of all animals on earth have six legs....'
